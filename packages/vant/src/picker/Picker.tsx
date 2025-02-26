@@ -153,12 +153,22 @@ export default defineComponent({
     });
 
     const onChange = (value: Numeric, columnIndex: number) => {
-      setValue(columnIndex, value);
+      if (columnsType.value === 'cascade') {
+        setValue(
+          columnIndex,
+          currentColumns.value[columnIndex].length
+            ? currentColumns.value[columnIndex][0][fields.value.value]
+            : undefined,
+        );
+      } else {
+        setValue(columnIndex, value);
+      }
 
       if (columnsType.value === 'cascade') {
         // reset values after cascading
         selectedValues.value.forEach((value, index) => {
           const options = currentColumns.value[index];
+
           if (!isOptionExist(options, value, fields.value)) {
             setValue(
               index,
