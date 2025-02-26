@@ -441,7 +441,7 @@ test('should render empty slot when options is empty', async () => {
   expect(wrapper.html()).not.toContain('empty content');
 });
 
-test.only('should reset the second argument when the first argument is changed somehow', async () => {
+test('should reset the second argument when the first argument is changed somehow', async () => {
   const wrapper = mount(Picker, {
     props: {
       showToolbar: true,
