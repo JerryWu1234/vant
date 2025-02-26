@@ -146,7 +146,6 @@ export default defineComponent({
         newValues[index] = value;
         selectedValues.value = newValues;
       }
-      console.log(selectedValues.value, 'selectedValues');
     };
 
     const getEventParams = () => ({
