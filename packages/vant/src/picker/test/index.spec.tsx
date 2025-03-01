@@ -496,4 +496,20 @@ test('should reset the second argument when the first argument is changed someho
     wrapper.emitted<[PickerConfirmEventParams]>('confirm')![0][0]
       .selectedValues,
   ).toEqual(['1', '-1']);
+  console.log(
+    wrapper
+      .findAll('.van-picker-column')[1]
+      .findAll('.van-picker-column__item')[1]
+      .html(),
+  );
+  await wrapper
+    .findAll('.van-picker-column')[1]
+    .findAll('.van-picker-column__item')[1]
+    .trigger('click');
+
+  await wrapper.find('.van-picker__confirm').trigger('click');
+  expect(
+    wrapper.emitted<[PickerConfirmEventParams]>('confirm')![1][0]
+      .selectedValues,
+  ).toEqual(['1', '0']);
 });

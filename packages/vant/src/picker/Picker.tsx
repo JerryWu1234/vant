@@ -33,8 +33,6 @@ import {
   getFirstEnabledOption,
 } from './utils';
 
-import { AREA_EMPTY_CODE } from '../area/utils';
-
 // Composables
 import { useChildren, useEventListener, useParent } from '@vant/use';
 import { useExpose } from '../composables/use-expose';
@@ -162,14 +160,15 @@ export default defineComponent({
         selectedValues.value.forEach((value, index) => {
           const options = currentColumns.value[index];
           // reset when the first argument is changed
-          if (!isOptionExist(options, value, fields.value) || index > 0) {
+          if (
+            !isOptionExist(options, value, fields.value) ||
+            (columnIndex === 0 && index > 0)
+          ) {
             const isEmptyOption = options.length
               ? options[0][fields.value.value]
               : undefined;
             // there is special situation that when `columnsPlaceholder` property passes into Area component
-            if (isEmptyOption !== AREA_EMPTY_CODE) {
-              setValue(index, isEmptyOption);
-            }
+            setValue(index, isEmptyOption);
           }
         });
       }
