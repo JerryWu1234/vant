@@ -159,16 +159,14 @@ export default defineComponent({
         // reset values after cascading
         selectedValues.value.forEach((value, index) => {
           const options = currentColumns.value[index];
-          // reset when the first argument is changed
           if (
             !isOptionExist(options, value, fields.value) ||
             (columnIndex === 0 && index > 0)
           ) {
-            const isEmptyOption = options.length
-              ? options[0][fields.value.value]
-              : undefined;
-            // there is special situation that when `columnsPlaceholder` property passes into Area component
-            setValue(index, isEmptyOption);
+            setValue(
+              index,
+              options.length ? options[0][fields.value.value] : undefined,
+            );
           }
         });
       }

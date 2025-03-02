@@ -441,7 +441,7 @@ test('should render empty slot when options is empty', async () => {
   expect(wrapper.html()).not.toContain('empty content');
 });
 
-test('should reset the second argument when the first argument is changed somehow', async () => {
+test('should reset subsequent columns to their first item when a column changes', async () => {
   const wrapper = mount(Picker, {
     props: {
       showToolbar: true,
@@ -477,31 +477,17 @@ test('should reset the second argument when the first argument is changed someho
       ],
     },
   });
-
-  await wrapper
-    .findAll('.van-picker-column')[0]
-    .findAll('.van-picker-column__item')[0]
-    .trigger('click');
+  const getPickerColumn = wrapper.findAll('.van-picker-column')[0];
+  const getItem = getPickerColumn.findAll('.van-picker-column__item');
+  await getItem[0].trigger('click');
   expect(wrapper.emitted<[PickerConfirmEventParams]>('change')).toBeFalsy();
-  await wrapper
-    .findAll('.van-picker-column')[0]
-    .findAll('.van-picker-column__item')[1]
-    .trigger('click');
-  await wrapper
-    .findAll('.van-picker-column')[0]
-    .findAll('.van-picker-column__item')[0]
-    .trigger('click');
+  await getItem[1].trigger('click');
+  await getItem[0].trigger('click');
   await wrapper.find('.van-picker__confirm').trigger('click');
   expect(
     wrapper.emitted<[PickerConfirmEventParams]>('confirm')![0][0]
       .selectedValues,
   ).toEqual(['1', '-1']);
-  console.log(
-    wrapper
-      .findAll('.van-picker-column')[1]
-      .findAll('.van-picker-column__item')[1]
-      .html(),
-  );
   await wrapper
     .findAll('.van-picker-column')[1]
     .findAll('.van-picker-column__item')[1]
