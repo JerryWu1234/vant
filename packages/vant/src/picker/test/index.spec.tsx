@@ -445,6 +445,7 @@ test('should reset subsequent columns to their first item when a column changes'
   const wrapper = mount(Picker, {
     props: {
       showToolbar: true,
+      resetChildren: true,
       columns: [
         {
           text: 'test1',
