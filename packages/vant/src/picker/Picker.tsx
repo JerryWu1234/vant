@@ -163,7 +163,7 @@ export default defineComponent({
           const options = currentColumns.value[index];
           if (
             !isOptionExist(options, value, fields.value) ||
-            props.resetChildren
+            (props.resetChildren && columnIndex === 0 && index > 0)
           ) {
             setValue(
               index,
