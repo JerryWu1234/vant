@@ -194,6 +194,7 @@ export default defineComponent({
       // wait nextTick to ensure the model value is update to date
       // when confirm event is emitted
       nextTick(() => {
+        const params = getEventParams();
         emit('confirm', params);
       });
 

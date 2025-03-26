@@ -1,5 +1,6 @@
 import { later, mount, triggerDrag } from '../../../test';
-import { Picker, type PickerConfirmEventParams } from '..';
+import { Picker, type PickerOption, type PickerConfirmEventParams } from '..';
+import { computed, ref } from 'vue';
 
 const simpleColumn = [
   { text: '1990', value: '1990' },
@@ -499,4 +500,51 @@ test('should reset subsequent columns to their first item when a column changes'
     wrapper.emitted<[PickerConfirmEventParams]>('confirm')![1][0]
       .selectedValues,
   ).toEqual(['1', '0']);
+});
+test('should emit correct values when clicking confirm button during column scrolling', async () => {
+  const columnsOne: PickerOption[] = [
+    { text: 'Beijing', value: 'Beijing' },
+    { text: 'Shanghai', value: 'Shanghai' },
+  ];
+  const columnsTwo: Record<string, PickerOption[]> = {
+    Beijing: [
+      { text: 'Dongcheng', value: 'Dongcheng' },
+      { text: 'Xicheng', value: 'Xicheng' },
+      { text: 'Chaoyang', value: 'Chaoyang' },
+      { text: 'Haidian', value: 'Haidian' },
+    ],
+    Shanghai: [
+      { text: 'Huangpu', value: 'Huangpu' },
+      { text: 'Xuhui', value: 'Xuhui' },
+      { text: 'Changning', value: 'Changning' },
+      { text: 'Pudong', value: 'Pudong' },
+    ],
+  };
+  const currentValues = ref(['Beijing', 'Dongcheng']);
+  const wrapper = mount({
+    setup() {
+      const columns = computed(() => [
+        columnsOne,
+        columnsTwo[currentValues.value[0]],
+      ]);
+      return () => (
+        <Picker v-model={currentValues.value} columns={columns.value} />
+      );
+    },
+  });
+  const picker = wrapper.findComponent(Picker);
+  // Scroll to select "Shanghai"
+  triggerDrag(picker.findAll('.van-picker-column')[0], 0, -100);
+  // Trigger confirm immediately without waiting for scroll animation to complete
+  await picker.find('.van-picker__confirm').trigger('click');
+  expect(picker.emitted('confirm')![0]).toEqual([
+    {
+      selectedOptions: [
+        { text: 'Shanghai', value: 'Shanghai' },
+        { text: 'Huangpu', value: 'Huangpu' },
+      ],
+      selectedValues: ['Shanghai', 'Huangpu'],
+      selectedIndexes: [1, 0],
+    },
+  ]);
 });
